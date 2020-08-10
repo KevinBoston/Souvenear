@@ -1,0 +1,15 @@
+<p>Please signin or signup below:</p>
+
+<nav>
+  <% if logged_in? %>
+    <p>Welcome, <%=current_user.name %></p>
+    <a href="/trips/new"> Record Trip </a>
+    <a href="/logout"> Log Out </a>
+    
+
+  <% else %>
+    <a href="/signup">Sign Up</a>
+    <a href="/login"> Sign In </a>
+  <%end %>
+
+</nav>

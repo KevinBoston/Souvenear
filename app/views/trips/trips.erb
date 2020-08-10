@@ -1,0 +1,8 @@
+<p> Welcome, <%= current_user.name %>
+<h2> Past Trips </h2>
+
+<% @trips.each do |trip| %>
+  <div>
+    <li><a href="/trips/<%= trip.id %>"><%= trip.destination %></a></li>
+  </div>
+<% end %>

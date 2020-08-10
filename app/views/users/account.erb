@@ -1,0 +1,6 @@
+<p> Here are your trips, <%= @user.name %>
+<% @user.trips.each do |trip| %>
+  <div>
+    <%= trip.destination %>
+  </div>
+<% end %>
