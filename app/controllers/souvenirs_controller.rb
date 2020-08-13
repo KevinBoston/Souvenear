@@ -33,14 +33,14 @@ class SouvenirsController < ApplicationController
         end
     end
 
-#    get '/souvenirs/:id'
-#        if logged_in?
-#            @souvenir = Souvenir.find_by_id(params[:id])
-#            erb :'souvenirs/view_trip'
-#        else
-#            redirect to '/login'
-#        end
-#    end
+    get '/souvenirs/:id'
+        if logged_in?
+            @souvenir = Souvenir.find_by_id(params[:id])
+            erb :'souvenirs/view_trip'
+        else
+            redirect to '/login'
+        end
+    end
 
     get '/souvenirs/:id/edit' do 
         if logged_in?

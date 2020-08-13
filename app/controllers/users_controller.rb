@@ -13,10 +13,10 @@ class UsersController < ApplicationController
     end
   
     post '/signup' do
-      if params[:username] == "" || params[:email] == "" || params[:password] == ""
+      if params[:username] == "" || params[:name] == "" || params[:password] == ""
         redirect to '/signup'
       else
-        @user = User.new(:username => params[:username], :email => params[:email], :password => params[:password])
+        @user = User.new(:username => params[:username], :name => params[:name], :password => params[:password])
         @user.save
         session[:user_id] = @user.id
         redirect to '/account'
@@ -45,6 +45,20 @@ class UsersController < ApplicationController
       if logged_in?
         session.destroy
         redirect to '/'
+      else
+        redirect to '/'
+      end
+    end
+    get '/make_admin' do 
+      erb :'/users/make_admin'
+    end
+
+    post '/make_admin' do 
+      if logged_in?
+        @user = current_user
+        @user.admin = true 
+        @user.save
+        redirect to '/account'
       else
         redirect to '/'
       end
