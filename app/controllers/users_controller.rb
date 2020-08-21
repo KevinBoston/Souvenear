@@ -1,14 +1,21 @@
 class UsersController < ApplicationController
-    get '/users/:slug' do
+  get '/users/account' do 
+    @user = current_user
+    erb :'/users/account'
+  end
+  
+
+  
+  get '/users/:slug' do
       @user = User.find_by_slug(params[:slug])
-      erb :'users/show'
+      erb :'users/account'
     end
   
     get '/signup' do
       if !logged_in?
         erb :'users/create_user', locals: {message: "Please sign up before you sign in"}
       else
-        redirect to '/account'
+        redirect to '/users/account'
       end
     end
   
@@ -19,7 +26,7 @@ class UsersController < ApplicationController
         @user = User.new(:username => params[:username], :name => params[:name], :password => params[:password])
         @user.save
         session[:user_id] = @user.id
-        redirect to '/account'
+        redirect to '/users/account'
       end
     end
   
@@ -27,7 +34,7 @@ class UsersController < ApplicationController
       if !logged_in?
         erb :'users/login'
       else
-        redirect to '/account'
+        redirect to '/users/account'
       end
     end
   
@@ -35,7 +42,7 @@ class UsersController < ApplicationController
       user = User.find_by(:username => params[:username])
       if user && user.authenticate(params[:password])
         session[:user_id] = user.id
-        redirect to "/account"
+        redirect to "/users/account"
       else
         redirect to '/signup'
       end
@@ -58,7 +65,18 @@ class UsersController < ApplicationController
         @user = current_user
         @user.admin = true 
         @user.save
-        redirect to '/account'
+        redirect to '/users/account'
+      else
+        redirect to '/'
+      end
+    end
+
+    post '/remove_admin' do 
+      if logged_in?
+        @user = current_user
+        @user.admin = false 
+        @user.save
+        redirect to '/users/account'
       else
         redirect to '/'
       end

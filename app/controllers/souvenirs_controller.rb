@@ -1,8 +1,8 @@
 class SouvenirsController < ApplicationController
     get '/souvenirs' do 
         if logged_in?
-            @souvenirs = Souvenir.all.map {|souv|current_user.trips.include?(souv.trip_id)}
-            erb :'souvenirs/souvenirs'
+            @souvenirs = current_user.souvenirs
+            erb :'/souvenirs/souvenirs'
         else
             redirect to '/login'
         end
@@ -10,7 +10,8 @@ class SouvenirsController < ApplicationController
 
     get '/souvenirs/new' do 
         if logged_in?
-            erb :'souvenirs/create_souvenir'
+            @user = current_user
+            erb :'/souvenirs/create_souvenir'
         else
             redirect to '/login'
         end
@@ -18,12 +19,13 @@ class SouvenirsController < ApplicationController
 
     post '/souvenirs' do 
         if logged_in? 
-            if params[:souvenir_name] == ""
-                redirect to '/souvenir/new'
+            if params[:souvenirname] == ""
+                redirect to '/souvenirs/new'
             else
-                @souvenir = current_user.trips.souvenirs.create(params[:souvenir_name])
+                @trip = Trip.find_by_id(params[:souvenir][:trip_id])
+                @souvenir = @trip.souvenirs.build(souvenirname: params[:souvenirname])
                 if @souvenir.save
-                    redirect to '/souvenirs/#{@souvenir.id}'
+                    redirect to "/souvenirs/#{@souvenir.id}"
                 else
                     redirect to '/souvenirs/new'
                 end
@@ -33,10 +35,11 @@ class SouvenirsController < ApplicationController
         end
     end
 
-    get '/souvenirs/:id'
+    get '/souvenirs/:id' do
         if logged_in?
             @souvenir = Souvenir.find_by_id(params[:id])
-            erb :'souvenirs/view_trip'
+            @trip = Trip.find_by_id(@souvenir.trip_id)
+            erb :'/souvenirs/view_souvenir'
         else
             redirect to '/login'
         end
@@ -44,31 +47,32 @@ class SouvenirsController < ApplicationController
 
     get '/souvenirs/:id/edit' do 
         if logged_in?
+            
             @souvenir = Souvenir.find_by_id(params[:id])
             if @souvenir && @souvenir.trip.user == current_user
                 erb :'souvenirs/edit_souvenir'
             else 
-                redirect to '/souvenirs'
+                redirect to '/users/account'
             end
         else
             redirect to '/login'
         end
     end
 
-    patch '/tweets/:id' do 
+    patch '/souvenirs/:id' do 
         if logged_in?
-            if params[:souvenir_name] == ""
+            if params[:souvenirname] == ""
                 redirect to "/souvenirs/#{params[:id]}/edit"
             else
                 @souvenir = Souvenir.find_by_id(params[:id])
                 if @souvenir && @souvenir.trip.user == current_user
-                    if @souvenir.update(souvenir_name: params[:souvenir_name])
-                        redirect to "/souvenir/#{souvenir.id}"
+                    if @souvenir.update(souvenirname: params[:souvenirname])
+                        redirect to "/souvenirs/#{@souvenir.id}"
                     else 
-                        redirect to "/souvenir/#{souvenir.id}/edit"
+                        redirect to "/souvenirs/#{@souvenir.id}/edit"
                     end
                 else 
-                    redirect to '/souvenirs'
+                    redirect to '/users/account'
                 end
             end
         else
@@ -76,13 +80,13 @@ class SouvenirsController < ApplicationController
         end 
     end
 
-    delete '/souvenir/:id/delete' do 
+    delete '/souvenirs/:id/delete' do 
         if logged_in?
             @souvenir = Souvenir.find_by_id(params[:id])
-            if @souvenir && souvenir.trip.user == current_user
+            if @souvenir && @souvenir.trip.user == current_user
                 @souvenir.delete
             end
-            redirect to '/souvenirs'
+            redirect to '/users/account'
         else 
             redirect to '/login'
         end

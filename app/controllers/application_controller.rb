@@ -6,12 +6,17 @@ class ApplicationController < Sinatra::Base
     set :public_folder, 'public'
     set :views, 'app/views'
     enable :sessions
-    set :session_secret, "souvenear_secret"
+    enable :logging
+    set :session_secret, ENV['SESSION_SECRET']
   end
 
   get '/' do
     erb :index
   end
+  get '/account' do 
+    redirect to :'users/account'
+  end
+
 
   helpers do
 
@@ -24,8 +29,9 @@ class ApplicationController < Sinatra::Base
     end
     
     def is_admin?
-      !!@user.admin
+      !!current_user.admin
     end
+
 
 
   end

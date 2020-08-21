@@ -1,11 +1,14 @@
-<p><%= @souvenir.souvenir_name %>
+<p><%= @souvenir.souvenirname %>
 
-<form method="post" action="/souvenir/<%=@souvenir.id%>/delete">
+<form method="post" action="/souvenirs/<%=@souvenir.id%>/delete">
   <input id="hidden" type="hidden" name="_method" value="DELETE">
   <input type="submit" value="Delete Souvenir">
 </form>
 
-<a href="/tweets/<%=@souvenir.id%>/edit">Edit Souvenir</a>
+<br>
+<a href="/souvenirs/<%=@souvenir.id%>/edit">Edit Souvenir</a>
 
-<p>From <%= @souvenir.trip.destination %></p>
-<p> <a href="/trips/view_trip/#{@souvenir.trip_id"> View trip </a></p>
+<br>
+
+<p>From <%= @trip.destination %></p>
+<p> <a href="/trips/<%=@trip.id%>"> View trip </a></p>

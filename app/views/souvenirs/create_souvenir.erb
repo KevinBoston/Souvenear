@@ -1,11 +1,11 @@
 <h2>Add a souvenir</h2>
 <form action="/souvenirs" method="POST">
-  <p>Name: <input type="text" name="souvenir_name"></p>
+  <p>Name: <input type="text" name="souvenirname"></p>
   <p>From what trip? </p> 
   <h3> Existing trips:</h3>
-  <% Trip.all.each do |trip| %>
-    <input type="radio" name="souvenir[trip_id]" id="<%= trip.id %>" value="<%= trip.id %>"><%= trip.destination %></input><br>
+  <% @user.trips.each do |trip| %>
+    <input type="radio" name="souvenir[trip_id]" value="<%= trip.id %>"><%= trip.destination %><br>
 <% end %>
-  #Add dropdown menu with user's trips/add new one, like pet owner lab
+  <!-- #Add dropdown menu with user's trips/add new one, like pet owner lab -->
   <input class="btn btn-primary" type="submit" value="submit">
 </form>

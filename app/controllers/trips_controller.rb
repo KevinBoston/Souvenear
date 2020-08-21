@@ -1,16 +1,8 @@
 class TripsController < ApplicationController
-    get '/account' do 
-        if logged_in?
-            @trips = Trip.all.map {|trip|trip.user.id == session[:id]}
-            erb :'/trips/trips'
-        else
-            redirect to '/login'
-        end
-    end
-
+   
     get '/trips/new' do 
         if logged_in?
-            erb :'/trip/create_trip/'
+            erb :'trips/create_trip'
         else
             redirect to '/login'
         end
@@ -21,11 +13,11 @@ class TripsController < ApplicationController
             if params[:destination] == "" || params[:destination] == nil
                 redirect to '/trips/new'
             else
-                @trip = current_user.trips.build(destination => params[:destination], user_id => session[user_id], description => params[:description])
+                @trip = current_user.trips.build(destination: params[:destination], description: params[:description], date: params[:date])
                 if @trip.save
-                    redirect to '/trip/#{@trip.id}'
+                    redirect to "/trips/#{@trip.id}"
                 else
-                    redirect to '/trip/new'
+                    redirect to '/trips/new'
                 end
             end
         else
@@ -33,7 +25,7 @@ class TripsController < ApplicationController
         end
     end
 
-    get '/trip/:id' do 
+    get '/trips/:id' do 
         if logged_in?
             @trip = Trip.find_by_id(params[:id])
             erb :'/trips/view_trip'
@@ -42,30 +34,30 @@ class TripsController < ApplicationController
         end
     end
 
-    get '/trip/:id/edit' do 
+    get '/trips/:id/edit' do 
         if logged_in?
             @trip = Trip.find_by_id(params[:id])
             if @trip && @trip.user == current_user
-                erb :'trip/edit_trip'
+                erb :'trips/edit_trip'
             else
-                redirect to '/trips'
+                redirect to '/users/account'
             end
         else
             redirect to '/login'
         end
     end
 
-    patch '/tweets/:id' do 
+    patch '/trips/:id' do 
         if logged_in?
-            if params[:destination] == "" || params[:description] == ""
-                redirect to "/tweets/#{params[:id]}/edit"
+            if params[:destination] == "" || params[:description] == "" || params[:date] == ""
+                redirect to "/trips/#{params[:id]}/edit"
             else
                 @trip = Trip.find_by_id(params[:id])
-                if @trip && trip.user == current_user
-                    if @trip.update(destination: params[:destination])
-                        redirect to '/trips/#{@trip.id}'
+                if @trip && @trip.user == current_user
+                    if @trip.update(destination: params[:destination], description: params[:description], date: params[:date])
+                        redirect to "/trips/#{@trip.id}"
                     else
-                        redirect to '/trips/#{@trip.id}/edit'
+                        redirect to "/trips/#{@trip.id}/edit"
                     end
                 else
                     redirect to '/trips'
@@ -82,7 +74,7 @@ class TripsController < ApplicationController
             if @trip && @trip.user == current_user
                 @trip.delete
             end
-            redirect to '/trips'
+            redirect to '/account'
         else
             redirect to '/login'
         end

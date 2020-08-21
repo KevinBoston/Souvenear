@@ -1,13 +1,25 @@
-<p> Here are your trips, <%= @user.name %>
+<p> Here are your trips, <%= @user.name %>. </p>
+<p> You have been on <%= @user.trips.count %> trip(s) and have brought back <%= @user.souvenirs.count %> souvenir(s). </p>
+<p> <a href="/make_admin">Want to run things?</a></p>
+
+<h3> Past Trips </h3> <br>
 <% @user.trips.each do |trip| %>
   <div>
-    <%= trip.destination %>
+    <li><a href="/trips/<%= trip.id %>"><%= trip.destination %></a></li>
   </div>
 <% end %>
-<% if @user.is_admin? %>
-  <p>Here are all the trips: </p>
+
+<br><h3> Your Souvenirs </h3> <br>
+<% @user.souvenirs.each do |souv| %>
+  <div>
+  <li><a href="/souvenirs/<%= souv.id %>"><%= souv.souvenirname %></a></li>  </div>
+<% end %>
+<br> <br>
+<% if is_admin? %>
+  <h3>Here are all the trips: </h3>
   <% Trip.all.each do |trip| %>
     <div>
-    <%= trip.destination %>
+    <li><%= trip.destination %></li>
     </div>
+  <% end %>
   <% end %>
